@@ -7,12 +7,14 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-card>
+  <ion-card
+    button
+    *ngFor="let activity of (activityList | async)">
     <ion-img 
-      src="https://ep1.pinkbike.org/p5pb17626429/p5pb17626429.jpg">
+      [src]="activity.cropped">
     </ion-img>
     <ion-card-header>
-      <ion-card-title>Karl's Activity</ion-card-title>
+      <ion-card-title>{{activity.name}}</ion-card-title>
     </ion-card-header>
   </ion-card>
 </ion-content>
