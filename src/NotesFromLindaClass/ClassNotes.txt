@@ -3,3 +3,14 @@ http://jsonviewer.stack.hu/
 http://json2ts.com/
 
 https://ionicons.com/
+
+
+ionic generate service <serviceName>
+    stubs out service
+    adds servic to app module.
+
+ionic generate page <pageName>
+    creates new older with <pageName> with
+    new component stubbed out
+    added page to app routing.
+    

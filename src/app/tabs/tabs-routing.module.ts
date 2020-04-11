@@ -14,6 +14,10 @@ const routes: Routes = [
             path: '',
             loadChildren: () =>
               import('../tab1/tab1.module').then(m => m.Tab1PageModule)
+          },
+          {
+            path: 'activity-detail/:activityID',
+            loadChildren: () => import('../activity-detail/activity-detail.module').then( m => m.ActivityDetailPageModule)
           }
         ]
       },

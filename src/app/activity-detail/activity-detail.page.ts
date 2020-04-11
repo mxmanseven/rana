@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Activity } from '../types';
+import { ActivityService } from '../activity.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-activity-detail',
@@ -6,8 +10,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./activity-detail.page.scss'],
 })
 export class ActivityDetailPage implements OnInit {
+  //activityDetail: Observable<Activity>;
+  activityDetail: Activity = new Activity();
 
-  constructor() { }
+
+  constructor(
+    activityService: ActivityService,
+    activatedRoute: ActivatedRoute
+  ) { 
+    const activityID = activatedRoute.snapshot.params["activityID"];
+    //this.activityDetail = activityService.getActivity(activityID);
+    
+    activityService.getActivity(activityID).subscribe(a => {
+      this.activityDetail = a;
+    });
+  }
 
   ngOnInit() {
   }
