@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { CameraOptions, Camera } from "@ionic-native/camera/ngx";
+import { AngularFirestore } from '@angular/fire/firestore/firestore';
+import { AngularFireAuth } from '@angular/fire/auth/auth';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tab3',
@@ -9,15 +12,18 @@ import { CameraOptions, Camera } from "@ionic-native/camera/ngx";
 })
 export class Tab3Page {
   myProfileImage;
+  myStoredProfileImage: Observable<any>;
 
   constructor(
+    private _angularFireStore: AngularFirestore,
+    private _angularFireAuth: AngularFireAuth,
     private _camera: Camera,
     private _alertController: AlertController){
 
   }
 
   async selectImageSource(){
-    const camerOptions: CameraOptions = {
+    const cameraOptions: CameraOptions = {
       quality: 100,
       destinationType: this._camera.DestinationType.DATA_URL,
       encodingType: this._camera.EncodingType.JPEG,
@@ -43,7 +49,7 @@ export class Tab3Page {
         {
           text: "Camera",
           handler: ()=> {
-            this._camera.getPicture(camerOptions)
+            this._camera.getPicture(cameraOptions)
             .then((imageData)=> {
               this.myProfileImage = "data:image/jpeg;base64," + imageData;
             });
@@ -55,6 +61,12 @@ export class Tab3Page {
             this._camera.getPicture(galleryOptions)
             .then((imageData)=> {
               this.myProfileImage = "data:image/jpeg;base64," + imageData;
+              let uid; 
+              this._angularFireAuth.currentUser.then(u => {uid =  u.uid});
+              this._angularFireStore
+                .collection("users")
+                .doc(uid)
+                .set();
             });
           }
         }
