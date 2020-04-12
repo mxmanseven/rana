@@ -16,3 +16,8 @@ export class Activity {
         keywords: string = null
     ) {}
 }
+
+export interface LogintCredential {
+    email: string,
+    password: string
+}
