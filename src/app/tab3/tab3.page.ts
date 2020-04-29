@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { CameraOptions, Camera } from "@ionic-native/camera/ngx";
-import { AngularFirestore } from '@angular/fire/firestore/firestore';
-import { AngularFireAuth } from '@angular/fire/auth/auth';
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireAuth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -10,17 +10,32 @@ import { Observable } from 'rxjs';
   templateUrl: 'tab3.page.html',
   styleUrls: ['tab3.page.scss']
 })
-export class Tab3Page {
+export class Tab3Page implements OnInit {
+
+  FIRESTORE_COLLECTION: string = "users";
+
   myProfileImage;
   myStoredProfileImage: Observable<any>;
+  uid: string = "";
 
   constructor(
     private _angularFireStore: AngularFirestore,
     private _angularFireAuth: AngularFireAuth,
     private _camera: Camera,
     private _alertController: AlertController){
-
   }
+
+  ngOnInit() {
+    this._angularFireAuth.currentUser.then(u => {
+      this.uid =  u.uid;
+
+      this.myStoredProfileImage = this._angularFireStore
+        .collection(this.FIRESTORE_COLLECTION)
+        .doc(this.uid)
+        .valueChanges();
+    });
+  }
+
 
   async selectImageSource(){
     const cameraOptions: CameraOptions = {
@@ -51,7 +66,14 @@ export class Tab3Page {
           handler: ()=> {
             this._camera.getPicture(cameraOptions)
             .then((imageData)=> {
-              this.myProfileImage = "data:image/jpeg;base64," + imageData;
+              //this.myProfileImage = "data:image/jpeg;base64," + imageData;
+              const image = "data:image/jpeg;base64," + imageData;
+              this._angularFireStore
+                .collection(this.FIRESTORE_COLLECTION)
+                .doc(this.uid)
+                .set({
+                  image_src: image
+                });
             });
           }
         },
@@ -60,13 +82,14 @@ export class Tab3Page {
           handler: ()=> {
             this._camera.getPicture(galleryOptions)
             .then((imageData)=> {
-              this.myProfileImage = "data:image/jpeg;base64," + imageData;
-              let uid; 
-              this._angularFireAuth.currentUser.then(u => {uid =  u.uid});
+              //this.myProfileImage = "data:image/jpeg;base64," + imageData;
+              const image = "data:image/jpeg;base64," + imageData;
               this._angularFireStore
-                .collection("users")
-                .doc(uid)
-                .set();
+                .collection(this.FIRESTORE_COLLECTION)
+                .doc(this.uid)
+                .set({
+                  image_src: image
+                });
             });
           }
         }
