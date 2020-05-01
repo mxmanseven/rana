@@ -11,7 +11,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ActivityDetailPage implements OnInit {
   //activityDetail: Observable<Activity>;
-  activityDetail: Activity = new Activity();
+  activityDetail: Activity;
 
 
   constructor(
